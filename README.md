@@ -1,76 +1,74 @@
 ansible-tomcat
 ===============
 
-Oracle JDK 8 と Tomcat 8.0 をインストールするためのPlaybookです。
-Tomcatの標準ロギングAPI(java.util.logging)は見づらいのでlogbackに置き換えています。
+tomcat8+JDK8自动安装部署ansible-playbook脚本（本地安装包环境在分支local下，默认为本地安装包环境，远程下载包模式请下载分支cloud）。
+此安装脚本定义全局变量在group_vars/tomcat文件中，使用时请根据自己的需求修改相关参数值。
+jdk_archive_file: jdk-8u77-linux-x64.tar.gz   ##JDK压缩包名称
+jdk_extract_dir: jdk1.8.0_77               ##JDK版本名称
 
-JMXの有効化、ConcurrentMarkSweepGC、GCロギング、メモリチューニング等を含みます。(TODO)
+tomcat_version: 8.5.31                     #tomcat版本名称（用于下载指定文件和重命名）
+tomcat_file: apache-tomcat-8.5.31.tar.gz   #tomcat压缩包名称
+app_name: demo-tomcat-8080   ##tomcat目录名称
+app_directory: /data/app   ##tomcat安装位置
+
+http_port: 8080    ##tomcat http端口
+ajp_port: 8009    ##tomcat ajp端口
+
+ipv6_disable: True
+
+jmx_registry_port: 10080  ##jmx接口，默认没有用
+jmx_server_port: 10081  ##jmx接口，默认没有用
+
+tomcat_user: admin   #tomcat工作用户名
+tomcat_group: admin   #tomcat工作用户组
+
+min_heap_size: 512M
+max_heap_size: 512M
+metaspace_size: 128M
+max_metaspace_size: 128M
+
+gc_log_file: /logs/gc.log
+heap_dump_dir: /logs
+
+
+模板中，将环境变量设置放置在setenv.sh中，默认设置了gc日志和堆内存限制，如有特殊需求请修改如下文件。
 See: roles/tomcat8/templates/tomcat/bin/setenv.sh
 
-Manager API経由でのデプロイを可能とするため外部にポートを公開しています。
-そのためのroleとuserも追加してあります。
-See: roles/tomcat8/templates/tomcat/conf/tomcat-users.xml
 
-公開したくない場合はfirewalld関係のtaskを削除してください。
+
+tomcat8安装脚本相见如下。
 See: roles/tomcat8/tasks/main.yml
 
-Requirements
-------------
-
-対象サーバ: CentOS 7 限定 (Redhatの7系なら動くと思います)
-理由: systemd, firewalld, alternatives に依存しているため。
-
-実行サーバ: ansibleが動作する環境
 
 Building
 --------
 
-### ansibleインストール
+### ansible安装
 
 ```shell
 sudo yum install -y epel-release
-sudo yum install -y --enablerepo=epel python-pip python-paramiko
-sudo pip install ansible
+sudo yum install -y ansible
 ```
 
 ### clone
 
 ```shell
-git clone https://github.com/sonodar/ansible-tomcat8.git
+git clone https://github.com/imlxh/ansible.git
 ```
 
-### hosts設定
 
-/etc/hosts に下記を追記。
-
-Tomcat構築対象サーバのIPアドレス tomcat-server
-
-例:
-
-```
-192.168.56.10 tomcat-server
-```
-
-### SSH公開鍵を対象ホストに設定
-
-あらかじめ対象サーバに対してrootでSSHログイン可能にしておく必要があります。
-
-```shell
-sudo sed -i -e 's/^#?PermitRootLogin.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
-sudo service sshd restart
-```
-
-公開鍵ペアを生成して対象サーバに登録します。
 
 ```shell
 ssh-keygen -t rsa
 ssh-copy-id -i .ssh/id_rsa.pub root@tomcat-server
 ```
 
-### ansible-playbook 実施
+### ansible-playbook 
 
 ```shell
-cd ansible-tomcat; ./ansible-build.sh
+cd ansible; ./ansible-build.sh
+或者 ansible-playbook site.yml
 ```
 
-http://tomcat-server:8080/ にアクセスしてTomcatの画面が出れば成功。
+
+
