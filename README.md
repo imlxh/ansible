@@ -3,7 +3,7 @@ ansible-tomcat
 
 tomcat8+JDK8自动安装部署ansible-playbook脚本（本地安装包环境在分支local下，默认为本地安装包环境，远程下载包模式请下载分支cloud）。
 此安装脚本定义全局变量在group_vars/tomcat文件中，使用时请根据自己的需求修改相关参数值。
-`
+```
 jdk_archive_file: jdk-8u77-linux-x64.tar.gz   ##JDK压缩包名称
 jdk_extract_dir: jdk1.8.0_77               ##JDK版本名称
 
@@ -30,7 +30,7 @@ max_metaspace_size: 128M
 
 gc_log_file: /logs/gc.log
 heap_dump_dir: /logs
-`
+```
 模板中，将环境变量设置放置在setenv.sh中，默认设置了gc日志和堆内存限制，如有特殊需求请修改如下文件。
 See: roles/tomcat8/templates/tomcat/bin/setenv.sh
 
