@@ -36,7 +36,7 @@ See: roles/tomcat8/templates/tomcat/bin/setenv.sh
 
 
 
-tomcat8安装脚本相见如下。
+tomcat8安装脚本详见。
 See: roles/tomcat8/tasks/main.yml
 
 
@@ -50,19 +50,35 @@ sudo yum install -y epel-release
 sudo yum install -y ansible
 ```
 
-### clone
+### git clone
 
 ```shell
 git clone https://github.com/imlxh/ansible.git
 ```
 
 
-
+###ansible cluster配置
 ```shell
 ssh-keygen -t rsa
-ssh-copy-id -i .ssh/id_rsa.pub root@tomcat-server
+ssh-copy-id -i .ssh/id_rsa.pub root@192.168.0.100   ##免密钥认证
 ```
+###配置ansible hosts
+位置/etc/ansible/hosts
+示例：
+```
+[tomcat]
+tomcat1 ansible_ssh_host=192.168.0.100
+```
+###ansbile playbook配置
+位置 site.yml
+```
+- hosts: tomcat    ##tomcat对应ansible [tomcat]标签
+  remote_user: root
 
+  roles:
+    - oracle-jdk8
+    - tomcat8
+```
 ### ansible-playbook 
 
 ```shell
