@@ -1,0 +1,9 @@
+port {{ sentinelport }}
+dir "/tmp"
+daemonize no
+logfile {{ installdir }}/{{ redisport }}/logs/sentinel-{{ sentinelport }}.log
+protected-mode no
+{% for host in groups['redis-master'] %}
+sentinel monitor redis-{{ redisport }} {{ host }} {{ redisport }}  2
+{% endfor %}
+sentinel auth-pass redis-{{redisport}} {{ redispassword }}

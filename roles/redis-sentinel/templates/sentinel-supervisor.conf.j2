@@ -1,0 +1,4 @@
+[program:sentinel-{{ sentinelport }}]
+command={{ installdir }}/{{ redisport }}/bin/redis-sentinel {{ installdir }}/{{ redisport }}/conf/sentinel-1{{ redisport }}.conf
+directory={{ installdir }}/{{ redisport }}
+redirect_stderr=true
