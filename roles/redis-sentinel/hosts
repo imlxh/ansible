@@ -1,3 +1,4 @@
+##需要考虑系统优化和supervisor初始化安装
 [redis-master]
 redis-master.example.com
 
